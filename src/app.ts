@@ -1,4 +1,6 @@
 import * as express from 'express'
+import UsersRouter from './routes/users'
+import IndexRouter from './routes'
 
 class App {
 
@@ -6,27 +8,13 @@ class App {
 
   constructor() {
     this.app = express()
-    this.rotas()
+    this.routes()
   }
 
-  private rotas() {
+  private routes() {
 
-    const requestTime = (req, res, next) => {
-      req.requestTime = Date.now()
-      next()
-    }
-    
-    this.app.use(requestTime)
-    
-    this.app.get('/', (req: any, res) => {
-      var responseText = 'Hello world '
-      responseText += `Requested at: ${req.requestTime}`
-      res.send(responseText)
-    })
-    
-    this.app.post('/', (req, res) => {
-      res.send('Hello world from method post!')
-    })
+    this.app.use('/', IndexRouter)
+    this.app.use('/users', UsersRouter)
     
   }
 
