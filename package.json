@@ -19,6 +19,7 @@
     "gulp": "3.9.1",
     "gulp-clean": "0.4.0",
     "gulp-nodemon": "2.2.1",
+    "gulp-typescript": "4.0.1",
     "typescript": "3.0.1"
   }
 }
