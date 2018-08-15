@@ -1,4 +1,5 @@
 import * as express from 'express'
+import * as bodyParser from 'body-parser'
 import UsersRouter from './routes/users'
 import IndexRouter from './routes'
 
@@ -8,11 +9,12 @@ class App {
 
   constructor() {
     this.app = express()
-    this.routes()
+    this.routes()    
   }
 
   private routes() {
-
+    this.app.use(bodyParser.json())
+    this.app.use(bodyParser.urlencoded({ extended: false })) // Pesqiosar o que isso faz!!
     this.app.use('/', IndexRouter)
     this.app.use('/users', UsersRouter)
     
