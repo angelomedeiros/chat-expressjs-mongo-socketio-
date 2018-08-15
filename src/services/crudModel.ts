@@ -4,7 +4,6 @@ import { Response } from 'express';
 export abstract class CrudModel<T extends mongoose.Document> {
 
   constructor (protected model: mongoose.Model<T>) {
-    // this.model = model
   }
 
   protected findAll = (req, res) => {
