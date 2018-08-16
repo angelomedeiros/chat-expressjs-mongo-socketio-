@@ -17,7 +17,7 @@ class UsersRouter extends CrudModel<IUser> {
     this.router.get('/',  this.findAll)
     this.router.get('/:id', this.findById)
     this.router.post('/', this.create)
-    this.router.post('/:id', this.update)
+    this.router.put('/:id', this.update)
     this.router.delete('/:id',this.delete)
     this.router.get('/findOne', this.findOne)
   }  
