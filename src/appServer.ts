@@ -74,9 +74,14 @@ export class AppServer {
       socket.on('disconnect', () => {        
         console.log('Conexão perdida! com "/chat" ')
       })
+
+      // socket.on('leave room', (chatId) => {
+      //   // console.log('XXXXXXXXXXXXXXXX', chatId)
+      //   socket.leave(chatId)
+      // })
       
       socket.on('newMessage', (chatId, message) => {    
-        socket.broadcast.to(chatId).emit('addMessage', message)
+        socket.in(chatId).emit('addMessage', message)
       })
 
     })
