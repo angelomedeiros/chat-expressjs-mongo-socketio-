@@ -6,7 +6,7 @@ export default class DataAccess {
   public mongooseInstance  : any
 
   dbConnection () {
-    this.mongooseInstance = mongoose.connect('mongodb://localhost:27017/teste-express-mongo', { useNewUrlParser: true }) // mongooseInstance
+    this.mongooseInstance = mongoose.connect('mongodb://localhost:27017/chat', { useNewUrlParser: true }) // mongooseInstance
     this.mongooseConnection = mongoose.connection // mongooseConnection
     this.mongooseConnection.on('error', console.error.bind(console, 'connection error:'));
     this.mongooseConnection.once('open', () => {
