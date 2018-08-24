@@ -4,6 +4,7 @@ import * as socketIo from 'socket.io'
 import * as path from 'path'
 import * as bodyParser from 'body-parser'
 import UsersRouter from './routes/users'
+import ConversasRouter from './routes/conversas'
 import IndexRouter from './routes'
 import DataAccess from './config/dataAccess'
 import * as swaggerUi from 'swagger-ui-express'
@@ -56,7 +57,8 @@ export class AppServer {
 
   private routes(): void {
     this.app.use('/', IndexRouter)
-    this.app.use('/users', UsersRouter)    
+    this.app.use('/users', UsersRouter)
+    this.app.use('/conversas', ConversasRouter)
   }
 
   private listen(): void {
@@ -75,10 +77,9 @@ export class AppServer {
         console.log('Conexão perdida! com "/chat" ')
       })
 
-      // socket.on('leave room', (chatId) => {
-      //   // console.log('XXXXXXXXXXXXXXXX', chatId)
-      //   socket.leave(chatId)
-      // })
+      socket.on('leave room', (chatId) => {
+        socket.leave(chatId)
+      })
       
       socket.on('newMessage', (chatId, message) => {    
         socket.in(chatId).emit('addMessage', message)
