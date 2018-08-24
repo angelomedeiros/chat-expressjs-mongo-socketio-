@@ -18,8 +18,10 @@ const mensagemSchema = new mongoose.Schema({
 
 const conversaSchema = new mongoose.Schema({
   identificador: {
-    type: String,
-    required: true
+    type: 'String',
+    required: true,
+    unique: true,
+    index: true
   },
   mensagens: {
     type: [mensagemSchema],

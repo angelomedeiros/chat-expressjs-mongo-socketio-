@@ -9,6 +9,8 @@ import IndexRouter from './routes'
 import DataAccess from './config/dataAccess'
 import * as swaggerUi from 'swagger-ui-express'
 import * as YAML from 'yamljs'
+import * as Debug from 'debug'
+import * as logger from 'morgan'
 
 const swaggerDocument = YAML.load(path.join(__dirname, '/docs/swagger.yaml'))
 
@@ -20,6 +22,7 @@ export class AppServer {
   private server: Server
   private io: SocketIO.Server
   private port: number | string
+  private debug: any = Debug('chat')
 
   constructor() {
     this.createApp()
@@ -27,7 +30,7 @@ export class AppServer {
     this.createServer()
     this.sockets()
     this.listen()
-
+    
     this.middlewares()
     this.routes()
     this.db()
@@ -39,6 +42,7 @@ export class AppServer {
 
   private createServer(): void {
     this.server = createServer(this.app)
+    this.server.on('error', this.onError)
   }
 
   private config(): void {
@@ -53,6 +57,8 @@ export class AppServer {
     this.app.use(bodyParser.json())
     this.app.use(bodyParser.urlencoded({ extended: false })) // Pesquisar o que isso faz!!    
     this.app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+    // this.app.use(logger('combined'))
+    this.app.use(logger('dev'))
   }
 
   private routes(): void {
@@ -63,7 +69,8 @@ export class AppServer {
 
   private listen(): void {
     this.server.listen(this.port, () => {
-      console.log(`Listening on port ${this.port}`)
+      // console.log(`Listening on port ${this.port}`)
+      this.debug(`Listening on port ${this.port}`)
     })
 
     const nsp = this.io.of('/chat')
@@ -104,6 +111,29 @@ export class AppServer {
 
   public getApp(): express.Application {
     return this.app
+  }
+
+  private onError(error) {
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
+
+    var bind = typeof this.port === 'string'
+        ? 'Pipe ' + this.port
+        : 'Port ' + this.port;
+
+    switch (error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
   }
 
 }

@@ -26,16 +26,13 @@ export abstract class CrudModel<T extends mongoose.Document> {
     })
   }
 
-  protected create = (req, res: Response) => {
+  protected create = (req, res: Response, next) => {
     const document = new this.model(req.body)
     document.save()
             .then( x => {
               res.send(x)
             })
-            .catch( e => {
-              res.status(401)
-              res.send(e)
-            })
+            .catch(next)
   }
 
   protected update = (req, res) => {
