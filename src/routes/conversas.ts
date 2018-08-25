@@ -23,7 +23,7 @@ class ConversasRouter extends CrudModel<IConversa> {
   }
 
   pushMensagem = (req: express.Request, res: express.Response, next) => {
-    const query = Conversa.findByIdAndUpdate(req.params.id, { $push: { mensagens: req.body } }, { new: true })
+    const query = Conversa.findOneAndUpdate({ identificador: req.params.id }, { $push: { mensagens: req.body } }, { new: true, upsert: true })
     query.select('-_id -__v -id')
     query.slice('mensagens', -10)
     // query.where('mensagens').slice(5) // Ou isso
