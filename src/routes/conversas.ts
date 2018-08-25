@@ -14,7 +14,7 @@ class ConversasRouter extends CrudModel<IConversa> {
   }
 
   findMensagens = (req: express.Request, res: express.Response, next) => {
-    const query = Conversa.findById(req.params.id, '-_id -__v')
+    const query = Conversa.findOne({ identificador: req.params.id }, '-_id -__v')
       query.slice('mensagens', -50)
       query.then( conversa => {
         res.send(conversa)
