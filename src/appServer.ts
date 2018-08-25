@@ -11,6 +11,7 @@ import * as swaggerUi from 'swagger-ui-express'
 import * as YAML from 'yamljs'
 import * as Debug from 'debug'
 import * as logger from 'morgan'
+import { Sockets } from './services/sockets'
 
 const swaggerDocument = YAML.load(path.join(__dirname, '/docs/swagger.yaml'))
 
@@ -20,7 +21,6 @@ export class AppServer {
   private app: express.Application
   private db : any = new DataAccess().dbConnection
   private server: Server
-  private io: SocketIO.Server
   private port: number | string
   private debug: any = Debug('chat')
 
@@ -28,12 +28,16 @@ export class AppServer {
     this.createApp()
     this.config()
     this.createServer()
-    this.sockets()
+    this.ss()
     this.listen()
     
     this.middlewares()
     this.routes()
     this.db()
+  }
+
+  public ss() {
+    new Sockets(this.server)
   }
 
   private createApp(): void {
@@ -47,10 +51,6 @@ export class AppServer {
 
   private config(): void {
     this.port = this.normalizePort(process.env.PORT || AppServer.PORT)
-  }
-
-  private sockets(): void {
-    this.io = socketIo(this.server)
   }
 
   private middlewares(): void {
@@ -71,27 +71,6 @@ export class AppServer {
     this.server.listen(this.port, () => {
       // console.log(`Listening on port ${this.port}`)
       this.debug(`Listening on port ${this.port}`)
-    })
-
-    const nsp = this.io.of('/chat')
-    nsp.on('connection', (socket) => {
-
-      socket.on('join', (chatId) => {
-        socket.join(chatId)
-      })
-
-      socket.on('disconnect', () => {        
-        console.log('Conexão perdida! com "/chat" ')
-      })
-
-      socket.on('leave room', (chatId) => {
-        socket.leave(chatId)
-      })
-      
-      socket.on('newMessage', (chatId, message) => {    
-        socket.in(chatId).emit('addMessage', message)
-      })
-
     })
   }
 
