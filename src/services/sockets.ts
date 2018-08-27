@@ -24,10 +24,6 @@ export class Sockets {
 
       socket.on('join', (chatId) => {
         socket.join(chatId)
-        // const result = async () => {
-        //   const mensagens = await this.findMensagens(chatId)
-        //   return mensagens.toJSON()
-        // }
         this.findMensagens(chatId).then(result => {
           socket.emit('enviar mensagens', result)
         })
@@ -43,7 +39,7 @@ export class Sockets {
       
       socket.on('newMessage', (chatId, message) => {
         console.log(message, chatId)
-        const result = this.pushMensagem(chatId, message)
+        this.pushMensagem(chatId, message)
         socket.in(chatId).emit('addMessage', message)
       })
     })
@@ -53,7 +49,6 @@ export class Sockets {
     const query = Conversa.findOneAndUpdate({ identificador: identificador }, { $push: { mensagens: mensagem } }, { new: true, upsert: true })
     query.select('-_id -__v -id')
     query.slice('mensagens', -1)
-    // query.where('mensagens').slice(5) // Ou isso
     query.exec().then( result => console.log(result) ).catch( err => console.log(err))
   }
 
