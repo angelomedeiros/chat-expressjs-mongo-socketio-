@@ -25,9 +25,7 @@ const conversaSchema = new mongoose.Schema({
   },
   mensagens: {
     type: [mensagemSchema],
-    required: true,
-    // select: false, // Não exibe as mensagens por padrão nas queries ,
-    // default: [] // Testar sem esse parametro // Esse parametro é opcional nesse caso
+    required: true
   }
 })
 
