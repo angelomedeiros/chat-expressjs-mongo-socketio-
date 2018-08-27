@@ -37,10 +37,10 @@ export class Sockets {
         socket.leave(chatId)
       })
       
-      socket.on('newMessage', (chatId, message) => {
-        console.log(message, chatId)
-        this.pushMensagem(chatId, message)
-        socket.in(chatId).emit('addMessage', message)
+      socket.on('newMessage', (chatId, mensagem) => {
+        console.log(mensagem, chatId)
+        this.pushMensagem(chatId, mensagem)
+        socket.in(chatId).emit('addMessage', mensagem)
       })
     })
   }
