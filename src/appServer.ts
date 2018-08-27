@@ -1,19 +1,10 @@
 import * as express from 'express'
 import { createServer, Server } from 'http'
-import * as socketIo from 'socket.io'
-import * as path from 'path'
 import * as bodyParser from 'body-parser'
-import UsersRouter from './routes/users'
-import ConversasRouter from './routes/conversas'
-import IndexRouter from './routes'
 import DataAccess from './config/dataAccess'
-import * as swaggerUi from 'swagger-ui-express'
-import * as YAML from 'yamljs'
 import * as Debug from 'debug'
 import * as logger from 'morgan'
 import { Sockets } from './services/sockets'
-
-const swaggerDocument = YAML.load(path.join(__dirname, '/docs/swagger.yaml'))
 
 export class AppServer {
 
@@ -28,15 +19,13 @@ export class AppServer {
     this.createApp()
     this.config()
     this.createServer()
-    this.ss()
-    this.listen()
-    
+    this.createSockets()
+    this.listen()    
     this.middlewares()
-    this.routes()
     this.db()
   }
 
-  public ss() {
+  public createSockets() {
     new Sockets(this.server)
   }
 
@@ -55,21 +44,12 @@ export class AppServer {
 
   private middlewares(): void {
     this.app.use(bodyParser.json())
-    this.app.use(bodyParser.urlencoded({ extended: false })) // Pesquisar o que isso faz!!    
-    this.app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
-    // this.app.use(logger('combined'))
+    this.app.use(bodyParser.urlencoded({ extended: false }))
     this.app.use(logger('dev'))
-  }
-
-  private routes(): void {
-    this.app.use('/', IndexRouter)
-    this.app.use('/users', UsersRouter)
-    this.app.use('/conversas', ConversasRouter)
   }
 
   private listen(): void {
     this.server.listen(this.port, () => {
-      // console.log(`Listening on port ${this.port}`)
       this.debug(`Listening on port ${this.port}`)
     })
   }
